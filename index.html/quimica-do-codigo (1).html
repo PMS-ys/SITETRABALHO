@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="pt-PT">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>A Química por trás do Código</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@600;800&family=Nunito+Sans:wght@400;700&display=swap" rel="stylesheet">
+<style>
+:root{--bg:#f2f5f8;--sf:#fff;--ink:#0e1a2b;--mut:#4f6078;--ln:#cfd8e3;--tl:#0d8a7f;--or:#c9651a;--navy:#0e1a2b;--ok:#1f9d55;--no:#d64a2c;
+box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media(prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b1524;--sf:#14243b;--ink:#eef2f7;--mut:#9db0c9;--ln:#26405f;--tl:#2ec4b6;--or:#f4a261;--ok:#3ccf7e;--no:#ff7a59}}
+:root[data-theme="dark"]{--bg:#0b1524;--sf:#14243b;--ink:#eef2f7;--mut:#9db0c9;--ln:#26405f;--tl:#2ec4b6;--or:#f4a261;--ok:#3ccf7e;--no:#ff7a59}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box}
+body{margin:0;background:var(--bg);color:var(--ink);font:400 17px/1.55 "Nunito Sans",system-ui,sans-serif}
+body::before{content:"";position:fixed;inset:0 0 auto;height:env(safe-area-inset-top,0px);background:var(--sf);z-index:10}
+h1,h2,h3{font-family:Unbounded,"Trebuchet MS",sans-serif;line-height:1.15;margin:0 0 .5em}
+h2{font-size:clamp(1.4rem,4vw,2rem)}h3{font-size:1.1rem}
+.top{position:sticky;top:env(safe-area-inset-top,0px);z-index:9;display:flex;align-items:center;gap:12px;padding:10px 16px;background:var(--sf);border-bottom:1px solid var(--ln)}
+.brand{display:flex;align-items:center;gap:8px;font-family:Unbounded,sans-serif;font-size:.8rem}
+.logo{display:grid;place-items:center;width:34px;height:34px;border-radius:8px;background:#f4a261;color:var(--navy);font-weight:800}
+nav{display:flex;gap:4px;overflow-x:auto;flex:1}
+nav button{border:0;background:none;color:var(--mut);font:700 .95rem "Nunito Sans",sans-serif;padding:8px 12px;border-radius:999px;cursor:pointer;white-space:nowrap}
+nav button.on{background:var(--navy);color:#fff}
+.xp{font-weight:700;white-space:nowrap}
+main{max-width:1000px;margin:0 auto;padding:24px 16px 48px}
+.view{display:none}.view.on{display:block}
+.hero{display:grid;gap:28px;grid-template-columns:1.2fr .8fr;align-items:center;padding:20px 0 10px}
+.hero h1{font-size:clamp(2rem,6vw,3.6rem);font-weight:800}
+.hero p{color:var(--mut);max-width:46ch}
+.chip{position:relative;justify-self:center;width:min(280px,70vw);aspect-ratio:1;background:#16294a;border:6px solid #2ec4b6;border-radius:28px;display:grid;place-items:center;animation:fl 5s ease-in-out infinite}
+.chip::before,.chip::after{content:"";position:absolute;background:repeating-linear-gradient(90deg,#2ec4b6 0 10px,transparent 10px 32px)}
+.chip::before{inset:-26px 28px auto;height:20px}
+.chip::after{inset:auto 28px -26px;height:20px}
+.chip b{display:grid;place-items:center;width:52%;aspect-ratio:1;border-radius:18px;background:#f4a261;color:var(--navy);font:800 3.4rem Unbounded,sans-serif}
+.chip small{position:absolute;bottom:24%;font-size:.8rem;color:var(--navy)}
+@keyframes fl{50%{transform:translateY(-8px)}}
+@media(prefers-reduced-motion:reduce){.chip{animation:none}*{transition:none!important}}
+.stack{display:grid;gap:6px;margin:18px 0;max-width:420px}
+.stack div{padding:10px 14px;border-radius:10px;font-weight:700;color:var(--navy)}
+.grid{display:grid;gap:14px;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));margin-top:20px}
+.card{background:var(--sf);border:1px solid var(--ln);border-radius:14px;padding:18px;text-align:left;color:var(--ink);font:inherit}
+button.card{cursor:pointer;transition:border-color .2s}button.card:hover{border-color:var(--tl)}
+.card p{margin:.3em 0 0;color:var(--mut);font-size:.95rem}
+.btn{border:0;background:var(--tl);color:#fff;font:700 1rem "Nunito Sans",sans-serif;padding:12px 22px;border-radius:12px;cursor:pointer}
+:root:not([data-theme="light"]) .btn{color:var(--navy)}
+button:focus-visible{outline:3px solid var(--or);outline-offset:2px}
+.mut{color:var(--mut)}
+.pt{overflow-x:auto;padding-bottom:8px}
+.ptg{display:grid;grid-template-columns:repeat(18,1fr);gap:3px;min-width:640px}
+.ptg>*{aspect-ratio:1;border-radius:5px;font:700 .72rem "Nunito Sans",sans-serif;display:grid;place-items:center;border:0;padding:0}
+.ptg .e{background:none}
+.ptg button{background:var(--sf);color:var(--mut);border:1px solid var(--ln);cursor:pointer}
+.ptg button.hl{color:var(--navy);border:0;font-size:.9rem;box-shadow:0 0 0 2px var(--bg),0 0 0 4px var(--c)}
+.ptg button.sel{transform:scale(1.18);z-index:1}
+.det{display:grid;gap:20px;grid-template-columns:150px 1fr;margin-top:20px;background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:20px}
+.big{aspect-ratio:1;border-radius:18px;display:grid;place-items:center;align-content:center;color:var(--navy);text-align:center}
+.big b{font:800 2.8rem Unbounded,sans-serif;line-height:1}.big span{font-size:.85rem}
+.det ul{margin:.5em 0;padding-left:1.1em}
+.fich{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.fich span{border:1px solid var(--ln);border-radius:999px;padding:3px 12px;font-size:.88rem}
+.sub{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:18px}
+.sub button{border:2px solid var(--ln);background:var(--sf);color:var(--ink);font:700 .95rem "Nunito Sans",sans-serif;padding:9px 16px;border-radius:12px;cursor:pointer}
+.sub button.on{border-color:var(--tl);background:var(--tl);color:#fff}
+:root:not([data-theme="light"]) .sub button.on{color:var(--navy)}
+.box{background:var(--sf);border:1px solid var(--ln);border-radius:16px;padding:22px;min-height:300px}
+.clue{font-size:1.25rem;font-weight:400;font-family:"Nunito Sans",sans-serif;line-height:1.4}
+.opts{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));gap:10px;margin:16px 0}
+.tile{border:2px solid var(--ln);background:var(--bg);color:var(--ink);border-radius:14px;padding:12px;cursor:pointer;display:grid;place-items:center;font:inherit;min-height:84px}
+.tile b{font:800 1.6rem Unbounded,sans-serif}.tile span{font-size:.85rem;color:var(--mut)}
+.tile.ok,.opt.ok{border-color:var(--ok);background:color-mix(in srgb,var(--ok) 22%,transparent)}
+.tile.no,.opt.no{border-color:var(--no);background:color-mix(in srgb,var(--no) 22%,transparent)}
+.tile.sel{border-color:var(--or)}
+.tile:disabled,.opt:disabled{cursor:default}
+.shake{animation:sk .3s}@keyframes sk{25%{transform:translateX(-6px)}75%{transform:translateX(6px)}}
+.fb{min-height:1.6em;font-weight:700}
+.cols{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.cols>div{display:grid;gap:10px;align-content:start}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin:16px 0}
+.two .tile{min-height:90px;font-weight:700;text-align:center}
+.item{font:800 1.5rem Unbounded,sans-serif;text-align:center;padding:24px 0}
+.bar{height:8px;border-radius:99px;background:var(--ln);overflow:hidden;margin-bottom:16px}
+.bar i{display:block;height:100%;background:var(--tl);transition:width .3s}
+.opt{display:block;width:100%;text-align:left;margin:8px 0;padding:14px 16px;border:2px solid var(--ln);background:var(--bg);color:var(--ink);border-radius:12px;font:inherit;cursor:pointer}
+.end{text-align:center;padding:30px 0}.end h3{font-size:1.6rem}
+.steps{display:grid;gap:12px;counter-reset:s;margin-top:16px}
+.steps .card{position:relative;padding-left:62px}
+.steps .card::before{counter-increment:s;content:counter(s);position:absolute;left:16px;top:16px;width:32px;height:32px;border-radius:50%;background:var(--tl);color:var(--navy);display:grid;place-items:center;font-weight:800}
+.warn{border-left:6px solid var(--no)}
+footer{text-align:center;color:var(--mut);font-size:.85rem;padding:20px 16px 32px}
+@media(max-width:700px){.hero{grid-template-columns:1fr}.det{grid-template-columns:1fr}.big{max-width:150px}.brand span{display:none}.cols{grid-template-columns:1fr}}
+</style>
+</head>
+<body>
+<header class="top">
+  <div class="brand"><div class="logo">Si</div><span>Química do Código</span></div>
+  <nav id="nav">
+    <button data-v="home" class="on">Início</button><button data-v="tab">Tabela</button><button data-v="jog">Jogos</button><button data-v="rec">Reciclagem</button><button data-v="quiz">Quiz</button>
+  </nav>
+  <div class="xp">⭐ <span id="xp">0</span></div>
+</header>
+
+<main>
+<section class="view on" id="home">
+  <div class="hero">
+    <div>
+      <h1>A Química por trás do Código</h1>
+      <p>Do silício ao lixo eletrónico: descobre de que é feito o computador onde programas, com jogos e um quiz para a turma do 10.º TSI.</p>
+      <div class="stack">
+        <div style="background:#2ec4b6">Software (código)</div>
+        <div style="background:#f4a261">Hardware (chips)</div>
+        <div style="background:#1b3257;color:#fff">Elementos químicos</div>
+      </div>
+      <button class="btn" data-go="tab">Explorar a tabela</button>
+    </div>
+    <div class="chip"><b>Si</b><small>14</small></div>
+  </div>
+  <div class="grid">
+    <button class="card" data-go="tab"><h3>Missão 1</h3><p>Silício, cobre e ouro: os materiais da motherboard.</p></button>
+    <button class="card" data-go="jog"><h3>Missão 2</h3><p>Lítio e neodímio: porque os dispositivos são pequenos e potentes.</p></button>
+    <button class="card" data-go="rec"><h3>Missão 3</h3><p>Como reciclar o lixo eletrónico e recuperar metais.</p></button>
+  </div>
+</section>
+
+<section class="view" id="tab">
+  <h2>Tabela Periódica dos computadores</h2>
+  <p class="mut">Clica nos elementos com cor: são os que fazem os computadores funcionar.</p>
+  <div class="pt"><div class="ptg" id="ptg"></div></div>
+  <div class="det" id="det"></div>
+</section>
+
+<section class="view" id="jog">
+  <h2>Jogos</h2>
+  <div class="sub" id="sub">
+    <button data-g="1" class="on">Quem sou eu?</button><button data-g="2">Liga as peças</button><button data-g="3">Triagem de E-waste</button>
+  </div>
+  <div class="box" id="gbox"></div>
+</section>
+
+<section class="view" id="rec">
+  <h2>Mineração urbana</h2>
+  <p class="mut">As placas de circuitos têm mais ouro por tonelada do que muitos minérios. Recuperar esses metais poupa extração mineira e evita poluição.</p>
+  <div class="steps">
+    <div class="card"><h3>Recolha</h3><p>O equipamento velho chega a ecopontos ou lojas com recolha.</p></div>
+    <div class="card"><h3>Desmontagem</h3><p>Separam-se baterias, placas e carcaças.</p></div>
+    <div class="card"><h3>Trituração</h3><p>As peças são partidas em pedaços pequenos.</p></div>
+    <div class="card"><h3>Separação</h3><p>Os materiais são separados por tipo.</p></div>
+    <div class="card"><h3>Processos químicos</h3><p>Pirometalurgia: fundir. Hidrometalurgia: dissolver em soluções. Eletrólise: purificar o metal.</p></div>
+  </div>
+  <div class="card warn" style="margin-top:16px"><h3>Chumbo e cádmio: perigo</h3><p>Se o lixo for deitado fora, estes metais pesados infiltram-se no solo e nas águas e não se degradam: passam pela cadeia alimentar.</p></div>
+  <h3 style="margin-top:28px">O que podemos fazer</h3>
+  <div class="grid">
+    <div class="card">Reparar e reutilizar antes de comprar um aparelho novo.</div>
+    <div class="card">Entregar o equipamento velho em ecopontos ou lojas com recolha.</div>
+    <div class="card">Nunca deitar pilhas e baterias no lixo comum.</div>
+    <div class="card">Escolher dispositivos duráveis e fáceis de reparar.</div>
+  </div>
+</section>
+
+<section class="view" id="quiz">
+  <h2>Quiz</h2>
+  <div class="box" id="qbox"></div>
+</section>
+</main>
+
+<footer>Trabalho de grupo: Paulo Moura, Joshua Braga, Miguel Francisco e Carlos Rodrigo.<br>Física e Química, 10.º TSI, Prof.ª Filipa Costa, Agrupamento de Escolas Francisco de Holanda, 2026/2027.</footer>
+
+<script>
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const sh=a=>[...a].sort(()=>Math.random()-.5);
+let xp=0;const pts=n=>{xp+=n;$('#xp').textContent=xp};
+const E={
+Si:{n:"Silício",z:14,g:"14",p:3,b:"p",c:"Semimetal",col:"#2ec4b6",use:"chips e processadores",d:["A matéria-prima é a areia (SiO₂).","Semicondutor: conduz melhor que um isolante, mas pior que um metal.","Com impurezas (como fósforo) fazem-se microinterruptores: é aqui que nascem os bits 0 e 1."],clue:"Venho da areia e sou a base dos chips. Sou semicondutor!"},
+Cu:{n:"Cobre",z:29,g:"11",p:4,b:"d",c:"Metal de transição",col:"#f4a261",use:"pistas da motherboard, cabos de rede e dissipadores",d:["Avermelhado e excelente condutor elétrico: só a prata conduz melhor.","Conduz também o calor.","Dúctil e maleável: transforma-se em fios e pistas finas."],clue:"Sou avermelhado, dúctil e só a prata me ganha a conduzir eletricidade."},
+Au:{n:"Ouro",z:79,g:"11",p:6,b:"d",c:"Metal",col:"#e9c46a",use:"pinos dos processadores e conectores",d:["Muito pouco reativo: não oxida nem corrói.","Garante contacto elétrico fiável.","Usa-se uma camada finíssima, por isso a quantidade por dispositivo é pequena."],clue:"Não oxido nem corroo, por isso garanto bons contactos nos pinos."},
+Li:{n:"Lítio",z:3,g:"1",p:2,b:"s",c:"Metal alcalino",col:"#2ec4b6",use:"baterias de iões de lítio",d:["É o metal mais leve e perde facilmente um eletrão: muita energia para pouco peso.","Baterias recarregáveis de telemóveis e portáteis.","Muito reativo com a água e o ar: aparece sempre em compostos."],clue:"Sou o metal mais leve e dou energia às baterias recarregáveis."},
+Nd:{n:"Neodímio",z:60,g:"Lantanídeos",p:6,b:"f",c:"Metal (terra rara)",col:"#f4a261",use:"ímanes de discos rígidos, colunas e auscultadores",d:["Terra rara: fica no fundo da tabela.","Com ferro e boro forma ímanes muito potentes, mesmo pequenos.","A extração é difícil e poluente, por isso reciclar é importante."],clue:"Sou uma terra rara e, com ferro e boro, faço ímanes potentes."},
+Pb:{n:"Chumbo",z:82,g:"14",p:6,b:"p",c:"Metal pesado",col:"#98a6b8",use:"soldaduras e vidros de ecrãs antigos",d:["Afeta o sistema nervoso.","Infiltra-se no solo e nas águas.","Não se degrada: acumula-se nos seres vivos."],clue:"Estive em soldaduras e ecrãs antigos e afeto o sistema nervoso."},
+Cd:{n:"Cádmio",z:48,g:"12",p:5,b:"d",c:"Metal pesado",col:"#e76f51",use:"baterias antigas e alguns ecrãs",d:["É cancerígeno e prejudica os rins.","Acumula-se nos seres vivos e passa pela cadeia alimentar."],clue:"Estou em baterias antigas, sou cancerígeno e prejudico os rins."}
+};
+/* navegação */
+function show(v){$$('.view').forEach(s=>s.classList.toggle('on',s.id==v));$$('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.v==v));scrollTo(0,0)}
+$$('#nav button').forEach(b=>b.onclick=()=>show(b.dataset.v));
+$$('[data-go]').forEach(b=>b.onclick=()=>show(b.dataset.go));
+/* tabela */
+const rows=["H _16 He","Li Be _10 B C N O F Ne","Na Mg _10 Al Si P S Cl Ar","K Ca Sc Ti V Cr Mn Fe Co Ni Cu Zn Ga Ge As Se Br Kr","Rb Sr Y Zr Nb Mo Tc Ru Rh Pd Ag Cd In Sn Sb Te I Xe","Cs Ba La Hf Ta W Re Os Ir Pt Au Hg Tl Pb Bi Po At Rn","Fr Ra Ac Rf Db Sg Bh Hs Mt Ds Rg Cn Nh Fl Mc Lv Ts Og","_18","_3 Ce Pr Nd Pm Sm Eu Gd Tb Dy Ho Er Tm Yb Lu"];
+const g=$('#ptg');
+rows.forEach(r=>r.split(' ').forEach(t=>{
+  if(t[0]=='_'){for(let i=0;i<+t.slice(1);i++)g.append(Object.assign(document.createElement('div'),{className:'e'}));return}
+  const b=document.createElement('button');b.textContent=t;b.title=t;
+  if(E[t]){b.className='hl';b.style.setProperty('--c',E[t].col);b.style.background=E[t].col}
+  b.onclick=()=>detail(t,b);g.append(b)}));
+function detail(s,btn){
+  $$('.sel',g).forEach(x=>x.classList.remove('sel'));btn.classList.add('sel');
+  const e=E[s],d=$('#det');
+  if(!e){d.innerHTML=`<div class="big" style="background:var(--bg);border:1px solid var(--ln);color:var(--ink)"><b>${s}</b></div><div><h3>Este não faz parte da missão</h3><p class="mut">Procura os elementos com cor: Si, Cu, Au, Li, Nd, Pb e Cd.</p></div>`;return}
+  d.innerHTML=`<div class="big" style="background:${e.col}"><span>${e.z}</span><b>${s}</b><span>${e.n}</span></div>
+  <div><h3>${e.n} (${s})</h3><div class="fich"><span>Grupo ${e.g}</span><span>Período ${e.p}</span><span>Bloco ${e.b}</span><span>${e.c}</span></div>
+  <ul>${e.d.map(x=>`<li>${x}</li>`).join('')}</ul><p><b>Onde está:</b> ${e.use}.</p></div>`}
+detail('Si',$$('.hl',g).find(b=>b.textContent=='Si'));
+/* jogos */
+const gb=$('#gbox');
+function end(msg,again){gb.innerHTML=`<div class="end"><h3>${msg}</h3><button class="btn" id="again">Jogar outra vez</button></div>`;$('#again').onclick=again}
+function g1(){
+  const qs=sh(Object.keys(E));let i=0,s=0;
+  (function next(){
+    if(i>=qs.length)return end(`Acertaste ${s} de ${qs.length}!`,g1);
+    const k=qs[i],o=sh([k,...sh(Object.keys(E).filter(x=>x!=k)).slice(0,3)]);
+    gb.innerHTML=`<p class="mut">Pergunta ${i+1} de ${qs.length}</p><h3 class="clue">“${E[k].clue}”</h3><div class="opts">${o.map(x=>`<button class="tile" data-k="${x}"><b>${x}</b><span>${E[x].n}</span></button>`).join('')}</div><p class="fb" id="fb"></p>`;
+    $$('.tile',gb).forEach(b=>b.onclick=()=>{
+      const r=b.dataset.k==k;b.classList.add(r?'ok':'no');
+      if(r){s++;pts(10)}else $(`[data-k="${k}"]`,gb).classList.add('ok');
+      $('#fb').textContent=(r?'Certo! ':'Era o ')+E[k].n+': '+E[k].use+'.';
+      $$('.tile',gb).forEach(x=>x.disabled=true);setTimeout(()=>{i++;next()},1700)})
+  })()}
+function g2(){
+  const P=[["Pinos do processador","Au"],["Pistas da motherboard","Cu"],["Chip / processador","Si"],["Bateria do telemóvel","Li"],["Íman do disco rígido","Nd"],["Soldadura antiga","Pb"]];
+  let sel=null,done=0,tries=0;
+  gb.innerHTML=`<p class="mut">Escolhe uma peça e depois o elemento químico que lhe corresponde.</p><div class="cols"><div>${sh(P).map(p=>`<button class="tile" data-p="${p[1]}">${p[0]}</button>`).join('')}</div><div>${sh(P).map(p=>`<button class="tile" data-e="${p[1]}"><b>${p[1]}</b><span>${E[p[1]].n}</span></button>`).join('')}</div></div><p class="fb" id="fb"></p>`;
+  $$('[data-p]',gb).forEach(b=>b.onclick=()=>{$$('.sel',gb).forEach(x=>x.classList.remove('sel'));sel=b;b.classList.add('sel')});
+  $$('[data-e]',gb).forEach(b=>b.onclick=()=>{
+    if(!sel||b.disabled)return;tries++;
+    if(sel.dataset.p==b.dataset.e){[sel,b].forEach(x=>{x.classList.remove('sel');x.classList.add('ok');x.disabled=true});sel=null;pts(10);
+      if(++done==P.length)setTimeout(()=>end(`Completaste em ${tries} tentativas!`,g2),700)}
+    else{b.classList.add('shake','no');setTimeout(()=>b.classList.remove('shake','no'),400);$('#fb').textContent='Não é esse. Pensa nas propriedades do elemento.'}})}
+function g3(){
+  const I=[["Pilhas gastas",1],["Auscultadores avariados",1],["Casca de banana",0],["Portátil antigo",1],["Guardanapo sujo",0],["Carregador velho",1],["Espinhas de peixe",0],["Telemóvel partido",1]];
+  const q=sh(I);let i=0,s=0;
+  (function next(){
+    if(i>=q.length)return end(`Acertaste ${s} de ${q.length}!`,g3);
+    gb.innerHTML=`<p class="mut">Item ${i+1} de ${q.length}. Para onde vai?</p><div class="item">${q[i][0]}</div><div class="two"><button class="tile" data-a="1">Ecoponto ou loja com recolha de eletrónicos</button><button class="tile" data-a="0">Lixo comum</button></div><p class="fb" id="fb"></p>`;
+    $$('.tile',gb).forEach(b=>b.onclick=()=>{
+      const r=+b.dataset.a==q[i][1];b.classList.add(r?'ok':'no');if(r){s++;pts(10)}
+      $('#fb').textContent=q[i][1]?(r?'Certo! ':'Não! ')+'Tem metais valiosos ou perigosos e deve ser reciclado.':(r?'Certo! ':'Não! ')+'Não é lixo eletrónico.';
+      $$('.tile',gb).forEach(x=>x.disabled=true);setTimeout(()=>{i++;next()},1700)})
+  })()}
+const G={1:g1,2:g2,3:g3};
+$$('#sub button').forEach(b=>b.onclick=()=>{$$('#sub button').forEach(x=>x.classList.toggle('on',x==b));G[b.dataset.g]()});
+G[1]();
+/* quiz */
+const Q=[
+["Qual é a matéria-prima do silício usado nos chips?",["Areia (SiO₂)","Cobre","Ouro"]],
+["O silício é um…",["Semicondutor","Isolante perfeito","Gás"]],
+["Qual metal conduz eletricidade muito bem e só é ultrapassado pela prata?",["Cobre","Lítio","Chumbo"]],
+["Porque se usa ouro nos pinos dos processadores?",["Não oxida nem corrói","É barato","É muito leve"]],
+["Qual é o metal mais leve, usado nas baterias recarregáveis?",["Lítio","Chumbo","Cobre"]],
+["Que peças potentes se fazem com neodímio?",["Ímanes","Ecrãs","Cabos de rede"]],
+["O neodímio é um(a)…",["Terra rara","Gás nobre","Halogéneo"]],
+["Que metal pesado afeta o sistema nervoso?",["Chumbo","Silício","Ouro"]],
+["Como se chama recuperar metais do lixo eletrónico?",["Mineração urbana","Pesca de metais","Jardinagem"]],
+["Onde deves entregar um telemóvel velho?",["Ecoponto ou loja com recolha","Lixo comum","Rio"]]];
+const qb=$('#qbox');
+function quiz(){
+  const q=sh(Q);let i=0,s=0;
+  (function next(){
+    if(i>=q.length){const m=s>=9?'Mestre da Tabela Periódica!':s>=6?'Muito bem!':'Revê a tabela e tenta outra vez.';return qb.innerHTML=`<div class="end"><h3>${s} de ${q.length}</h3><p>${m}</p><button class="btn" id="qa">Repetir o quiz</button></div>`,$('#qa').onclick=quiz}
+    const [t,o]=q[i];
+    qb.innerHTML=`<div class="bar"><i style="width:${i/q.length*100}%"></i></div><p class="mut">Pergunta ${i+1} de ${q.length}</p><h3>${t}</h3>${sh(o).map(x=>`<button class="opt" data-o="${x}">${x}</button>`).join('')}<p class="fb" id="fb"></p>`;
+    $$('.opt',qb).forEach(b=>b.onclick=()=>{
+      const r=b.dataset.o==o[0];b.classList.add(r?'ok':'no');
+      if(r){s++;pts(10)}else{$$('.opt',qb).find(x=>x.dataset.o==o[0]).classList.add('ok')}
+      $('#fb').textContent=r?'Certo!':'A resposta certa: '+o[0];
+      $$('.opt',qb).forEach(x=>x.disabled=true);setTimeout(()=>{i++;next()},1500)})
+  })()}
+quiz();
+</script>
+</body>
+</html>
